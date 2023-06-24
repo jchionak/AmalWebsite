@@ -1,0 +1,14 @@
+body {
+    background-color: #e2ddd9;
+    font-family: 'Raleway', sans-serif;
+}
+
+.card {
+    background-color: #a8a39d;
+}
+
+#aboutCard {
+    max-width: 100%;
+    --bs-gutter-x: 0rem;
+    background-color: #a8a39d;
+}
