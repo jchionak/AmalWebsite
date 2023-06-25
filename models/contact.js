@@ -9,6 +9,10 @@ const ContactSchema = new Schema({
     inquiry: {
         type: String,
         required: true
+    },
+    date: {
+        type: String,
+        requried: true
     }
 })
 

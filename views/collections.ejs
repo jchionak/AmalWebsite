@@ -1,40 +1,27 @@
 <% layout('/layouts/boilerplate') %>
 
     <div class="container mt-3">
-        <h1 class="text-center">COLLECTIONS</h1>
+        <h1 class="text-center display-3">COLLECTIONS</h1>
         <div class="row">
-            <div class="col-4">
-                <div class="card">
-                    <img src="https://cdn.discordapp.com/attachments/1100975739530121307/1121893753439911996/pookal.JPG"
-                        class="card-img-top" alt="Flowers">
-                    <div class="card-body">
-                        <p class="card-title">NATURE</p>
-                        <p class="card-text">The great outdoors.</p>
-                        <a href="#" class="card-link">View Collection</a>
+            <% collections.forEach((collection, i)=> { %>
+                <% if (i !==0 && i % 3===0) { %>
+        </div>
+        <div class="row mt-0 mt-md-3">
+            <% } %>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card bouncy">
+                        <img src="<%= collection.leadPhoto %>" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <p class="card-title">
+                                <%= collection.name.toUpperCase() %>
+                            </p>
+                            <p class="card-text">
+                                <%= collection.description %>
+                            </p>
+                            <a href="/collections/<%= collection._id %>" class="card-link">View Collection</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-4">
-                <div class="card">
-                    <img src="https://cdn.discordapp.com/attachments/1100975739530121307/1121893751758000179/Kalor.JPG"
-                        class="card-img-top" alt="Colourful building with street sign in foreground">
-                    <div class="card-body">
-                        <p class="card-title">STREET</p>
-                        <p class="card-text">The city calls.</p>
-                        <a href="#" class="card-link">View Collection</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card">
-                    <img src="https://cdn.discordapp.com/attachments/1100975739530121307/1121894386100342846/Two_bros.JPG"
-                        class="card-img-top" alt="Closeup of action figures of Iron-man and Optimus Prime">
-                    <div class="card-body">
-                        <p class="card-title">STILL LIFE</p>
-                        <p class="card-text">The simple moments.</p>
-                        <a href="#" class="card-link">View Collection</a>
-                    </div>
-                </div>
-            </div>
+                <% }) %>
         </div>
     </div>

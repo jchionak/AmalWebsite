@@ -1,0 +1,11 @@
+<% layout('/layouts/boilerplate') %>
+
+    <div class="container justify-content-center">
+        <h1 class="display-3 text-center">
+            <%= photo.title %>
+        </h1>
+        <img src="<%= photo.src %>" alt="" id="showImage">
+        <p class="lead">
+            <%= photo.description %>
+        </p>
+    </div>

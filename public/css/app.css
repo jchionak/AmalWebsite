@@ -7,8 +7,29 @@ body {
     background-color: #a8a39d;
 }
 
+.card-link {
+    color: #8d7966;
+}
+
 #aboutCard {
     max-width: 100%;
     --bs-gutter-x: 0rem;
     background-color: #a8a39d;
+}
+
+.bouncy {
+    transition: ease-in 0.25s;
+}
+
+.bouncy:hover {
+    box-shadow: 0 0.5em 0.5em -0.4em black;
+    transform: translateY(-0.25em);
+}
+
+.card button {
+    color: white;
+}
+
+#showImage {
+    max-width: 70%;
 }

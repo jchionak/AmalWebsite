@@ -1,1 +1,24 @@
 <% layout('/layouts/boilerplate') %>
+
+    <div class="container mt-3">
+        <div class="row">
+            <% collection.photos.forEach((photo, i)=> { %>
+                <% if (i % 3===0) { %>
+        </div>
+        <div class="row mt-0 mt-md-3">
+            <% } %>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <a href="/collections/<%= collection._id %>/<%= photo._id %>">
+                        <div class="card bouncy">
+                            <img src="<%= photo.src %>" alt="<%= photo.description %>" class="card-img-top">
+                            <div class="card-body">
+                                <p class="card-title">
+                                    <%= photo.title %>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <% }) %>
+        </div>
+    </div>

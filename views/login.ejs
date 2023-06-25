@@ -1,0 +1,26 @@
+<% layout('/layouts/boilerplate') %>
+
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-2">
+                            Login (for admin purposes only)
+                        </h5>
+                        <form action="/login" method="POST">
+                            <div class="mb-2">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" name="username" id="username" class="form-control">
+                            </div>
+                            <div class="mb-2">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" id="password" class="form-control">
+                            </div>
+                            <button class="btn btn-success">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
