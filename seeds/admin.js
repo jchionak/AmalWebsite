@@ -18,5 +18,3 @@ const addAdmin = async (username, email, password) => {
     const admin = new User({ email, username });
     const registeredAdmin = await User.register(admin, password);
 }
-
-addAdmin('admin', 'jchionak@icloud.com', 'JamalAnthony44').then(() => mongoose.connection.close());
