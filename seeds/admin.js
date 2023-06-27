@@ -1,8 +1,12 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const mongoose = require('mongoose');
 
 const User = require('../models/user');
 
-mongoose.connect('mongodb://127.0.0.1:27017/jamal');
+mongoose.connect(process.env.DB_URL);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

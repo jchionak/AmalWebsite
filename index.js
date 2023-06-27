@@ -8,6 +8,7 @@ const path = require('path');
 const ejsMate = require('ejs-mate');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const passport = require('passport');
@@ -16,6 +17,7 @@ const { cloudinary } = require('./cloudinary/index');
 const { storage } = require('./cloudinary/index');
 const multer = require('multer');
 const upload = multer({ storage });
+const helmet = require('helmet');
 
 // models
 const Contact = require('./models/contact');
@@ -30,7 +32,9 @@ const wrapAsync = require('./utils/wrapAsync');
 const ExpressError = require('./utils/expressError');
 const dateFormat = require('./utils/dateFormat');
 
-mongoose.connect('mongodb://127.0.0.1:27017/jamal');
+const dbUrl = 'mongodb://127.0.0.1:27017/jamal'
+// process.env.DB_URL
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -47,19 +51,74 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'LOLsecret'
+    }
+});
+
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR', e);
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
     secret: 'LOLsecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(helmet());
+
+const scriptSrcUrls = [
+    'https://stackpath.bootstrapcdn.com/',
+    'https://kit.fontawesome.com/',
+    'https://code.jquery.com/',
+    'https://cdnjs.cloudflare.com/',
+    "https://cdn.jsdelivr.net/"
+];
+
+const styleSrcUrls = [
+    'https://kit-free.fontawesome.com/',
+    'https://stackpath.bootstrapcdn.com/',
+    'https://fonts.googleapis.com/',
+    'https://use.fontawesome.com',
+    'https://cdn.jsdelivr.net/'
+]
+
+const fontSrcUrls = [
+    'https://fonts.gstatic.com/'
+];
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'"],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/djxbuhpf2/"
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls]
+        }
+    })
+)
 
 app.use(passport.initialize());
 app.use(passport.session());
