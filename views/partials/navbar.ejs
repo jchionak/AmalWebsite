@@ -15,8 +15,16 @@
                     <a href="/collections" class="nav-link">COLLECTIONS</a>
                 </li>
                 <li class="nav-item nav-text">
+                    <a href="/projects" class="nav-link">PROJECTS</a>
+                </li>
+                <li class="nav-item nav-text">
                     <a href="/contact" class="nav-link">CONTACT</a>
                 </li>
+                <% if (currentUser) { %>
+                    <li class="nav-item nav-text">
+                        <a href="/admin" class="nav-link">ADMIN</a>
+                    </li>
+                    <% } %>
             </ul>
         </div>
     </div>

@@ -49,6 +49,30 @@
                     </div>
 
                 </div>
+
+                <h2>ADD NEW PROJECT</h2>
+                <p class="lead">Add a new project to the collection of projects. (Yes this is copy pasted allow it) </p>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            New Project Form!
+                        </h5>
+                        <form action="/projects" method="POST" enctype="multipart/form-data">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control mb-2" id="title" name="title">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea name="description" id="description" class="form-control mb-2" cols="30"
+                                rows="3"></textarea>
+                            <label for="image" class="form-label">Image (only one!)</label>
+                            <input class="form-control mb-2" type="file" id="image" name="image">
+                            <label for="link" class="form-label">Link to Project (YouTube link, Google Drive link,
+                                whatever you have but just put one)</label>
+                            <input class="form-control mb-2" type="text" id="link" name="link">
+                            <button class="btn btn-success">Add Collection</button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>

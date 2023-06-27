@@ -1,0 +1,26 @@
+<% layout('/layouts/boilerplate') %>
+
+    <div class="container mt-3">
+        <h2 class="display-3 text-center">EDIT COLLECTION</h2>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <form action="/collections/<%= collection._id %>?_method=PUT" method="POST"
+                    enctype="multipart/form-data">
+                    <div class="mb-2">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" value="<%= collection.name %>" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" cols="30" rows="3" class="form-control"><%= collection.description %>
+                        </textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label for="image" class="form-label">Add More Photos</label>
+                        <input type="file" id="image" name="image" multiple class="form-control">
+                    </div>
+                    <button class="btn btn-success">Submit Edits</button>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -30,6 +30,10 @@ body {
     color: white;
 }
 
+a {
+    text-decoration: none;
+}
+
 #showImage {
     max-width: 70%;
 }

@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 // node modules
 const express = require('express');
 const path = require('path');
@@ -8,12 +12,17 @@ const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const { cloudinary } = require('./cloudinary/index');
+const { storage } = require('./cloudinary/index');
+const multer = require('multer');
+const upload = multer({ storage });
 
 // models
 const Contact = require('./models/contact');
 const Collection = require('./models/collection');
 const Photo = require('./models/photo');
 const User = require('./models/user');
+const Project = require('./models/project');
 
 // custom utilities
 const { validateContact, timestamp, storeReturnTo, isLoggedIn } = require('./middleware');
@@ -60,6 +69,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
@@ -69,10 +79,54 @@ app.get('/', (req, res) => {
     res.render('home.ejs');
 })
 
-app.get('/collections', async (req, res) => {
+app.get('/collections', wrapAsync(async (req, res) => {
     const collections = await Collection.find({});
     res.render('collections.ejs', { collections });
-})
+}))
+
+app.post('/collections', isLoggedIn, upload.array('image'), wrapAsync(async (req, res) => {
+    const name = req.body.name;
+    const description = req.body.description;
+    const collection = new Collection({
+        name,
+        description,
+        photos: []
+    })
+    for (let image of req.files) {
+        const photo = new Photo({
+            src: image.path,
+            filename: image.filename
+        })
+        await photo.save();
+        collection.photos.push(photo);
+    }
+    collection.leadPhoto = collection.photos[0].src;
+    await collection.save();
+    req.flash('success', 'Uploaded new collection!');
+    res.redirect('/collections');
+}))
+
+app.get('/collections/:id/:photoId', wrapAsync(async (req, res) => {
+    const photoId = req.params.photoId;
+    const id = req.params.id;
+    const photo = await Photo.findById(photoId);
+    console.log(photo)
+    res.render('photo.ejs', { photo, id });
+}))
+
+app.delete('/collections/:id/:photoId', isLoggedIn, wrapAsync(async (req, res) => {
+    const photoId = req.params.photoId;
+    const id = req.params.id;
+    const filename = await Photo.findById(photoId);
+    await Photo.findByIdAndDelete(photoId);
+    await cloudinary.uploader.destroy(filename)
+    const collection = await Collection.findById(id).populate('photos');
+    await collection.updateOne({ $pull: { photos: { id: photoId } } });
+    collection.leadPhoto = collection.photos[0].src;
+    collection.save();
+    req.flash('success', 'Deleted!');
+    res.redirect(`/collections/${id}`);
+}))
 
 app.get('/collections/:id', wrapAsync(async (req, res) => {
     const id = req.params.id;
@@ -80,11 +134,70 @@ app.get('/collections/:id', wrapAsync(async (req, res) => {
     res.render('collection', { collection });
 }))
 
-app.get('collection/:photoId', wrapAsync(async (req, res) => {
-    const photoId = req.params.photoId;
-    const photo = Photo.findById(photoId);
-    res.render('photo.ejs', { photo });
+app.delete('/collections/:id', wrapAsync(async (req, res) => {
+    const id = req.params.id;
+    await Collection.findByIdAndDelete(id);
+    req.flash('success', 'Deleted collection!');
+    res.redirect('/collections');
 }))
+
+app.get('/collections/:id/edit', isLoggedIn, wrapAsync(async (req, res) => {
+    const id = req.params.id;
+    const collection = await Collection.findById(id);
+    res.render('edit.ejs', { collection });
+}))
+
+app.put('/collections/:id', isLoggedIn, upload.array('image'), wrapAsync(async (req, res) => {
+    const id = req.params.id;
+    const collection = await Collection.findById(id);
+    await Collection.findByIdAndUpdate(id, { name: req.body.name, description: req.body.description });
+    console.log(collection.photos);
+    for (let image of req.files) {
+        const photo = new Photo({
+            src: image.path,
+            filename: image.filename
+        })
+        await photo.save();
+        collection.photos.push(photo);
+    }
+    collection.save();
+    req.flash('success', 'Updated!');
+    res.redirect('/collections');
+}))
+
+app.get('/projects', wrapAsync(async (req, res) => {
+    const projects = await Project.find({}).populate('photo');
+    res.render('projects.ejs', { projects });
+}))
+
+app.post('/projects', isLoggedIn, upload.single('image'), wrapAsync(async (req, res) => {
+    const title = req.body.title;
+    const description = req.body.description;
+    const link = req.body.link;
+    const photo = new Photo({
+        src: req.file.path,
+        filename: req.file.filename
+    });
+    photo.save();
+    const project = new Project({
+        title,
+        description,
+        link,
+        photo
+    });
+    project.save();
+    req.flash('success', 'Uploaded new project!');
+    res.redirect('/projects');
+}))
+
+app.delete('/projects/:id', isLoggedIn, wrapAsync(async (req, res) => {
+    const id = req.params.id;
+    await Project.findByIdAndDelete(id);
+    req.flash('success', 'Deleted project!');
+    res.redirect('/projects');
+}))
+
+
 
 app.get('/contact', (req, res) => {
     res.render('contact.ejs');

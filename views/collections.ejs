@@ -9,18 +9,27 @@
         <div class="row mt-0 mt-md-3">
             <% } %>
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <div class="card bouncy">
-                        <img src="<%= collection.leadPhoto %>" class="card-img-top" alt="">
-                        <div class="card-body">
-                            <p class="card-title">
-                                <%= collection.name.toUpperCase() %>
-                            </p>
-                            <p class="card-text">
-                                <%= collection.description %>
-                            </p>
-                            <a href="/collections/<%= collection._id %>" class="card-link">View Collection</a>
+                    <a href="/collections/<%= collection._id %>">
+                        <div class="card bouncy">
+                            <img src="<%= collection.leadPhoto %>" class="card-img-top" alt="" crossorigin="anonymous">
+                            <div class="card-body">
+                                <p class="card-title">
+                                    <%= collection.name.toUpperCase() %>
+                                </p>
+                                <p class="card-text">
+                                    <%= collection.description %>
+                                </p>
+                                <% if (currentUser) { %>
+                                    <form action="/collections/<%= collection._id %>/edit" class="mb-2">
+                                        <button class="btn btn-info">EDIT</button>
+                                    </form>
+                                    <form action="/collections/<%= collection._id %>?_method=DELETE" method="POST">
+                                        <button class="btn btn-danger">DELETE</button>
+                                    </form>
+                                    <% } %>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <% }) %>
         </div>
