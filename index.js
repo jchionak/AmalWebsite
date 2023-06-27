@@ -32,8 +32,7 @@ const wrapAsync = require('./utils/wrapAsync');
 const ExpressError = require('./utils/expressError');
 const dateFormat = require('./utils/dateFormat');
 
-const dbUrl = 'mongodb://127.0.0.1:27017/jamal'
-// process.env.DB_URL
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/jamal'
 mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
@@ -51,11 +50,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
+const secret = process.env.SECRET || 'LOLsecret'
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'LOLsecret'
+        secret
     }
 });
 
@@ -66,12 +67,12 @@ store.on('error', function (e) {
 const sessionConfig = {
     store,
     name: 'session',
-    secret: 'LOLsecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        // secure: true,
+        secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -310,6 +311,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err, statusCode });
 })
 
-app.listen(3000, () => {
+const port = process.env.PORT || 3000
+app.listen(port, () => {
     console.log('Listening on port 3000!')
 })
