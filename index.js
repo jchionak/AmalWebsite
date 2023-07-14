@@ -166,6 +166,12 @@ app.post('/collections', isLoggedIn, upload.array('image'), wrapAsync(async (req
     res.redirect('/collections');
 }))
 
+app.get('/collections/:id/edit', isLoggedIn, wrapAsync(async (req, res) => {
+    const id = req.params.id;
+    const collection = await Collection.findById(id);
+    res.render('edit.ejs', { collection });
+}))
+
 app.get('/collections/:id/:photoId', wrapAsync(async (req, res) => {
     const photoId = req.params.photoId;
     const id = req.params.id;
@@ -199,12 +205,6 @@ app.delete('/collections/:id', wrapAsync(async (req, res) => {
     await Collection.findByIdAndDelete(id);
     req.flash('success', 'Deleted collection!');
     res.redirect('/collections');
-}))
-
-app.get('/collections/:id/edit', isLoggedIn, wrapAsync(async (req, res) => {
-    const id = req.params.id;
-    const collection = await Collection.findById(id);
-    res.render('edit.ejs', { collection });
 }))
 
 app.put('/collections/:id', isLoggedIn, upload.array('image'), wrapAsync(async (req, res) => {
