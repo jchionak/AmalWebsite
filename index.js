@@ -176,7 +176,6 @@ app.get('/collections/:id/:photoId', wrapAsync(async (req, res) => {
     const photoId = req.params.photoId;
     const id = req.params.id;
     const photo = await Photo.findById(photoId);
-    console.log(photo)
     res.render('photo.ejs', { photo, id });
 }))
 
@@ -211,7 +210,6 @@ app.put('/collections/:id', isLoggedIn, upload.array('image'), wrapAsync(async (
     const id = req.params.id;
     const collection = await Collection.findById(id);
     await Collection.findByIdAndUpdate(id, { name: req.body.name, description: req.body.description });
-    console.log(collection.photos);
     for (let image of req.files) {
         const photo = new Photo({
             src: image.path,

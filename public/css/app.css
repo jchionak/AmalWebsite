@@ -1,6 +1,8 @@
 body {
-    background-color: #e2ddd9;
+    /* background-color: #e2ddd9; */
+    background-color: #211711;
     font-family: 'Raleway', sans-serif;
+    color: white;
 }
 
 .card {
@@ -15,6 +17,10 @@ body {
     max-width: 100%;
     --bs-gutter-x: 0rem;
     background-color: #a8a39d;
+}
+
+#mainPhoto div {
+    border: none;
 }
 
 .bouncy {
