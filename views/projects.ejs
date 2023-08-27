@@ -1,34 +1,33 @@
 <% layout('/layouts/boilerplate') %>
 
-    <div class="container mt-2">
-        <% for (let project of projects) { %>
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="<%= project.photo.src %>" class="img-fluid rounded-start" alt=""
-                            crossorigin="anonymous">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <%= project.title %>
-                            </h5>
-                            <p class="card-text">
-                                <%= project.description %>
-                            </p>
-                            <a href="<%= project.link %>">
-                                <p class="card-text"><small class="text-body-secondary">
-                                        <u>See More Here!</u>
-                                    </small></p>
-                            </a>
-                            <% if (currentUser) { %>
-                                <form action="/projects/<%= project._id %>?_method=DELETE" method="POST">
-                                    <button class="btn btn-danger">DELETE</button>
-                                </form>
-                                <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="container mt-3">
+        <h1 class="text-center display-3">PROJECTS</h1>
+        <div class="row">
+            <% projects.forEach((project, i)=> { %>
+                <% if (i !==0 && i % 3===0) { %>
+        </div>
+        <div class="row mt-0 mt-md-3">
             <% } %>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <a href="<%= project.link %>">
+                        <div class="card bouncy">
+                            <img src="<%= project.photo.src %>" class="card-img-top" alt="" crossorigin="anonymous">
+                            <div class="card-body">
+                                <p class="card-title">
+                                    <%= project.title.toUpperCase() %>
+                                </p>
+                                <p class="card-text">
+                                    <%= project.description %>
+                                </p>
+                                <% if (currentUser) { %>
+                                    <form action="/projects/<%= project._id %>?_method=DELETE" method="POST">
+                                        <button class="btn btn-danger">DELETE</button>
+                                    </form>
+                                    <% } %>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <% }) %>
+        </div>
     </div>
